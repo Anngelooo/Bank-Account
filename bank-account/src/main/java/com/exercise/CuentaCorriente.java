@@ -7,13 +7,23 @@ public class CuentaCorriente extends Cuenta {
         super(saldoInicial, tasaAnual);
     }
 
+    public float getSobregiro() {
+        return sobregiro;
+        
+    }
+
+    public void setSobregiro(float sobregiro) {
+        this.sobregiro = sobregiro;
+        
+    }
+
     @Override
     public void retirar(float cantidad) {
         if (cantidad > 0) {
             if (cantidad <= saldo) {
                 saldo -= cantidad;
             } else {
-                sobregiro += (cantidad - saldo);
+                setSobregiro(getSobregiro() + (cantidad - saldo));
                 saldo = 0;
             }
             numRetiros++;
@@ -23,12 +33,12 @@ public class CuentaCorriente extends Cuenta {
     @Override
     public void consignar(float cantidad) {
         if (cantidad > 0) {
-            if (sobregiro > 0) {
-                if (cantidad >= sobregiro) {
-                    saldo += (cantidad - sobregiro);
-                    sobregiro = 0;
+            if (getSobregiro() > 0) {
+                if (cantidad >= getSobregiro()) {
+                    saldo += (cantidad - getSobregiro());
+                    setSobregiro(0);
                 } else {
-                    sobregiro -= cantidad;
+                    setSobregiro(getSobregiro() - cantidad);
                 }
             } else {
                 saldo += cantidad;
@@ -40,6 +50,6 @@ public class CuentaCorriente extends Cuenta {
     @Override
     public String imprimir() {
         return String.format("Saldo: %.2f, Comisión Mensual: %.2f, Transacciones: %d, Sobregiro: %.2f",
-                saldo, comisionMensual, numConsignaciones + numRetiros, sobregiro);
+                saldo, comisionMensual, numConsignaciones + numRetiros, getSobregiro());
     }
 }
